@@ -40,7 +40,7 @@ def sparse_to_peaks(CSR_mat,frag_index,frag_prop,frag_amount,valid_chroms,chroms
         os.makedirs(output_dir)
 
     logging.info("#######################################")
-    logging.info("Raj Extracting pairs for ChIP peaks calling")
+    logging.info("Extracting pairs for ChIP peaks calling")
 
     # Extract diagonal from sparse matrix
     diagonal , num_reads = extract_diagonal(CSR_mat,off_diag) #off diag here
@@ -340,7 +340,6 @@ def bed_printout(frag_prop,smoothed_diagonal,refined_peaks,peak_p_vals,output_be
     """print out a bed file with refined peaks, also add as a score the fold change of the highest point
     also prints out a bedgraph with the signal used for the peak calling"""
     # prints all fragments and then uses bedtools to merge the fragments that are contigous.
-    output1_file = open(output_bed + ".tempraj", "w")
     with open(output_bed + ".temp", "w") as output_file:
         for i in range(1,len(smoothed_diagonal)-1):
             if frag_prop[i-1][0] != frag_prop[i+1][0]:
