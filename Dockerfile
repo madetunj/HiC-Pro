@@ -6,12 +6,22 @@
 # Website:          https://github.com/madetunj/HiC-Pro
 # Provides:         All dependencies needed to run Abralab lab's HiC-Pro wrapper script
 # Base Image:       ghcr.io/stjude/abralab/binf-base:1.1.0
-# Build Cmd:        docker build --no-cache abralab/hicpro:v3.1.0 .
+# Build Cmd:        docker build --no-cache -t ghcr.io/stjude/abralab/hicpro:v3.1.0 .
 # Pull Cmd:         docker pull abralab/hicpro:v3.1.0
-# Run Cmd:          docker run --rm -ti abralab/hicpro:v3.1.0
+# Run Cmd:          docker run --rm -ti ghcr.io/stjude/abralab/hicpro:v3.1.0
 #################################################################
 
+## TOOLS INCLUDED
+#	HiCPro dependencies
+#	JUICEBOX
+#	HICHIP-PEAKS v0.1.2 (with minor edit)
+#	BEDTOOLS v2.25.0
+#	KENTUTIL bedGraphToBigWig
+#
+
+
 FROM ghcr.io/stjude/abralab/bedtools:v2.25.0 as frombed
+FROM ghcr.io/stjude/abralab/kentutils:latest as fromkent
 
 FROM ghcr.io/stjude/abralab/binf-base:1.1.0
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
@@ -58,9 +68,17 @@ RUN cd /tmp && \
     mv juicer_tools_1.22.01.jar /usr/local/bin
     
 ## Get configuration file
-RUN mkdir /data && cd /data && wget https://raw.githubusercontent.com/madetunj/HiC-Pro/master/config-hicpro.txt
+RUN mkdir /data && cd /data && wget https://raw.githubusercontent.com/madetunj/HiC-Pro/p1-modifications/config-hicpro.txt
 
 ## ADD DEPENDENCIES TO BASE IMAGE
 COPY --from=frombed /opt/bedtools2/bin /usr/local/bin
+COPY --from=fromkent /usr/local/bin/bedGraphToBigWig /usr/local/bin
 
+## INSTALL HICHIP-PEAKS
+#RUN conda create --name hichip-peaks python=3.7 pip
+RUN pip install hichip-peaks
+#RUN RUN pip install hichip-peaks
+RUN cd /usr/local/anaconda/envs/HiC-Pro_v3.1.0/lib/python3.8/site-packages/hichip_peaks/ && \
+    rm sparse_to_peaks.py && \
+    wget https://raw.githubusercontent.com/madetunj/HiC-Pro/p1-modifications/hichip-peaks/sparse_to_peaks.py
 RUN /HiC-Pro_3.1.0/bin/HiC-Pro -h
