@@ -15,9 +15,9 @@ set -o errexit   ## set -e : exit the script if any statement returns a non-true
 
 CURRENT_PATH=`dirname $0`
 
-tmpfile1=/tmp/hic1.$$
-tmpfile2=/tmp/hic2.$$
-tmpmkfile=/tmp/hicmk.$$
+tmpfile1=/tmp/hic1.$(date +%s)
+tmpfile2=/tmp/hic2.$(date +%s)
+tmpmkfile=/tmp/hicmk.$(date +%s)
 trap "rm -f $tmpfile1 $tmpfile2 $tmpmkfile" 0 1 2 3
 
 abspath() {
