@@ -19,7 +19,7 @@ CURRENT_PATH=`dirname $0`
 rand=$(echo $RANDOM | md5sum | head -c 20)
 tmpfile1=/tmp/hic1.$rand$(date +%s)
 tmpfile2=/tmp/hic2.$rand$(date +%s)
-tmpmkfile=/tmp/hicmk.$(date +%s)
+tmpmkfile=/tmp/hicmk.$rand$(date +%s)
 trap "rm -f $tmpfile1 $tmpfile2 $tmpmkfile" 0 1 2 3
 
 abspath() {
